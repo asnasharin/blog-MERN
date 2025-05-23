@@ -27,6 +27,7 @@ export const registerUser: RequestHandler = asyncHandler(
             id: newUser.id,
             email: newUser.email,
             name: newUser.name,
+            profile: newUser.profile
           },
         });
       }
