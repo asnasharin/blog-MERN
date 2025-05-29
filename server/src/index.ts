@@ -3,7 +3,7 @@ import cors from "cors"
 import morgan from "morgan"
 import connectDB from "./config/db";
 import authroutes from "./routes/authRoutes"
-import { notFound, errorHandler } from "./middleware/errorMiddleware"
+import { errorHandler } from "./middleware/errorMiddleware"
 import dotenv from "dotenv"
 
 dotenv.config()
@@ -14,11 +14,19 @@ connectDB()
 const port = process.env.PORT
 
 app.use(express.json())
-app.use(cors())
-process.env.NODE_ENV === "development" && app.use(morgan("dev"))
+
+const corsConfig = {
+  origin: 
+    process.env.ENVIRONMENT === "development"
+      ? process.env.FRONTENT_URL
+      : process.env.FRONTENT_URL_DEPLOYED,
+  credentials: true,
+}
+
+app.use(cors(corsConfig))
+process.env.ENVIRONMENT === "development" && app.use(morgan("dev"))
 app.use('/api', authroutes)
 
-app.use("*", notFound)
 app.use(errorHandler)
 
 app.listen(port, () => {
