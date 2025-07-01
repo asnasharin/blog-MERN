@@ -1,11 +1,11 @@
-import React from 'react'
-import LoginPage from '../LoginPage/LoginPage'
 import Navbar from '../../components/Navbar/Navbar'
+import Banner from "../../components/Banner/Banner"
 
 function HomePage() {
   return (
    <>
    <Navbar />
+   <Banner />
    </>
   )
 }
