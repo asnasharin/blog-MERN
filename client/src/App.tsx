@@ -7,6 +7,9 @@ import { ToastContainer } from "react-toastify"
 import HomePage from "./pages/HomePage/HomePage"
 import Protect from "./components/Auth/Protect"
 import Authenticate from "./components/Auth/Authenticate"
+import Dashboard from "./pages/Dashboard/Dashboard"
+import CreateBlog from "./components/CreateBlog/CreateBlog"
+import BlogList from "./components/BlogList/BlogList"
 
 function App() {
   
@@ -22,6 +25,9 @@ function App() {
         </Route>
         <Route element={<Protect />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create" element={<CreateBlog />} />
+          <Route path="blogs" element={<BlogList />} />
       </Route>
     </Routes>
     </Provider>  

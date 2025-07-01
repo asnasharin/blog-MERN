@@ -2,27 +2,35 @@ import { NextFunction, Request, Response } from "express"
 import asyncHandler from "express-async-handler"
 import blog from "../models/blogModel"
 
-export const createBlog =  asyncHandler (
-    async (req: Request, res: Response, next: NextFunction) => {
-       const { title, content } = req.body
 
-       if (!title || !content) {
-        res.status(400);
-        throw new Error("Title and content is required")
-       }
-       const newBlog = await blog.create({
-        title: title,
-        content: content
-       })
+export const createBlog = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { title, content } = req.body;
+    const filePath = req.file?.path;
 
-       res.status(200).json({
-        success: true,
-        data: newBlog
-       })
-
-
+    if (!title || !content || !filePath) {
+      res.status(400);
+      throw new Error("Title, content, and image are required");
     }
-) 
+
+    const normalizedPath = filePath.replace(/\\/g, "/");
+
+    const imageUrl = `${req.protocol}://${req.get("host")}/${normalizedPath}`;
+
+    const newBlog = await blog.create({
+      title,
+      content,
+      image: imageUrl,
+      user: req.user?.id, 
+    });
+
+    res.status(201).json({
+      success: true,
+      data: newBlog,
+    });
+  }
+);
+
 
 export const getAllBlog = asyncHandler (
     async (req: Request, res: Response) => {

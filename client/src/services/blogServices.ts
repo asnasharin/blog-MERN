@@ -4,23 +4,30 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
 
 
-export const createBlog = async (blog: Iblog) => {
-   try {
-    const { data } = await api.post("/create", blog)
+
+export const createBlog = async (blogData: FormData): Promise<any> => {
+  try {
+
+    const token = localStorage.getItem("token"); 
+
+    if (!token) {
+      throw new Error("No token found. User might not be logged in.");
+    }
+    const { data } = await api.post("/blog/create", blogData);
     return data;
-    } catch (error) {
-    console.log(error)
-    return error
-   }
-}
+  } catch (error: any) {
+    console.log(error);
+    return error.response?.data || { success: false, message: "Unexpected error" };
+  }
+};
 
 
 export const getBlogs = createAsyncThunk (
     "blog/get",
     async (_, thunkAPI) => {
         try {
-            const response = await api.get("/blog")
-            return response.data
+            const response = await api.get("/blog/getBlogs")
+            return response.data.data
         } catch (error) {
           const axiosError = error as AxiosError  
           const Error = (axiosError?.response?.data as { message: string }).message;

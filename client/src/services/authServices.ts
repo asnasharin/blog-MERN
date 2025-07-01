@@ -35,6 +35,7 @@ export const login = createAsyncThunk(
   async (formData: LoginCredentials, thunkAPI) => {
     try {
       const response = await api.post("/login", formData);
+
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;

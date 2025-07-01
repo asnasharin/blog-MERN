@@ -6,7 +6,7 @@ const route: Router = Router()
 
 route.post("/register", registerUser)
 route.post("/login", loginUser)
-route.use("/blog", blogroute)
+// route.use("/blog", blogroute)
 
 export default route
 

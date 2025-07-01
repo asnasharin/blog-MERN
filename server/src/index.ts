@@ -4,7 +4,9 @@ import morgan from "morgan"
 import connectDB from "./config/db";
 import authroutes from "./routes/authRoutes"
 import { errorHandler } from "./middleware/errorMiddleware"
+import blogRoutes from "./routes/blogRoutes"
 import dotenv from "dotenv"
+import multer from "multer"
 
 dotenv.config()
 const app = express()
@@ -14,6 +16,10 @@ connectDB()
 const port = process.env.PORT
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true}))
+app.use("/uploads", express.static("uploads"));
+
+
 
 const corsConfig = {
   origin: 
@@ -26,6 +32,7 @@ const corsConfig = {
 app.use(cors(corsConfig))
 process.env.ENVIRONMENT === "development" && app.use(morgan("dev"))
 app.use('/api', authroutes)
+app.use('/api/blog', blogRoutes)
 
 app.use(errorHandler)
 
