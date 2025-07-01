@@ -1,9 +1,29 @@
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../redux/store";
+import { useAppSelector, useAppDispatch } from "../../redux/store";
+import { useState } from "react";
+import DeleteModal from "../../components/DeleteModal/DeleteModal";
+import { deleteBlog } from "../../services/blogServices"; 
+import EditBlogModal from "../../components/EditBlogModal/EditBlogModal";
+import { editBlog } from "../../services/blogServices";
+import type { Iblog } from "../../types/blogTypes";
 
 export default function Dashboard() {
-  const blogs = useAppSelector((state) => state.blog.blogs)
- 
+  const blogs = useAppSelector((state) => state.blog.blogs);
+  const dispatch = useAppDispatch();
+
+  const [selectedBlogId, setSelectedBlogId] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [editingBlog, setEditingBlog] = useState<Iblog | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  
+  const handleDelete = () => {
+    if (selectedBlogId) {
+      dispatch(deleteBlog(selectedBlogId));
+      setSelectedBlogId(null);
+      window.location.reload()
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -41,15 +61,28 @@ export default function Dashboard() {
                       {blog.title}
                     </h2>
                     <span className="text-sm text-gray-500">
-                      {/* {new Date(blog.createdAt).toLocalseDateString()} */}
+                      {/* {new Date(blog.createdAt).toLocaleDateString()} */}
                     </span>
                   </div>
                   <p className="text-gray-600">{blog.content}</p>
                   <div className="mt-4 flex gap-4">
-                    <button className="text-blue-600 hover:underline">
-                      Edit
+                    <button
+                     onClick={() => {
+                     setEditingBlog(blog);
+                     setShowEditModal(true);
+                    }}
+                     className="text-blue-600 hover:underline"
+                    >
+                    Edit
                     </button>
-                    <button className="text-red-500 hover:underline">
+
+                    <button
+                      onClick={() => {
+                        setSelectedBlogId(blog._id);
+                        setShowModal(true);
+                      }}
+                      className="text-red-500 hover:underline"
+                    >
                       Delete
                     </button>
                   </div>
@@ -58,6 +91,29 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+
+        {/* Delete Modal */}
+        <DeleteModal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onConfirm={handleDelete}
+          title="Delete Blog"
+          message="Are you sure you want to permanently delete this blog?"
+        />
+
+        <EditBlogModal
+  show={showEditModal}
+  onClose={() => setShowEditModal(false)}
+  blog={editingBlog}
+  onSave={(formData) => {
+    if (editingBlog) {
+      dispatch(editBlog({ id: editingBlog._id, formData }));
+      setShowEditModal(false);
+    }
+  }}
+/>
+
+
       </div>
     </div>
   );

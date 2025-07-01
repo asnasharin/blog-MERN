@@ -83,31 +83,25 @@ export const deleteBlog = asyncHandler (
     }
 )
 
+export const updateBlog = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { title, content } = req.body;
+    const image = req.file?.path || req.body.image;
 
-export const updateBlog = asyncHandler (
-    async (req: Request, res: Response) => {
-        const { title, content} = req.body
-        // const { id } = req.params
+    const updatedBlog = await blog.findOneAndUpdate(
+      { _id: req.params.id },
+      { title, content, image },
+      { new: true }
+    );
 
-        const updateBlog = await blog.findOneAndUpdate(
-            {_id: req.params.id},
-            {
-                title: title,
-                content: content,
-            },
-            { new: true}
-        )
-
-        if (!updateBlog) {
-            res.status(404)
-            throw new Error("blog not found")
-        }
-
-        res.status(200).json({
-            success: true,
-            data: updateBlog
-        })
-       
-
+    if (!updatedBlog) {
+      res.status(404);
+      throw new Error("Blog not found");
     }
-)
+
+    res.status(200).json({
+      success: true,
+      data: updatedBlog,
+    });
+  }
+);

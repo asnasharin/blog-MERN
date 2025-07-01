@@ -1,7 +1,7 @@
 import type { errorMessage } from "./authTypes";
 
 export interface Iblog {
-  _id?: string;            
+  _id: string;            
   title: string;
   content: string;
   image: string;

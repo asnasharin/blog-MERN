@@ -45,8 +45,8 @@ export const getSingleBlog = createAsyncThunk(
   "blog/getSingle",
   async (id: string, thunkAPI) => {
     try {
-      const response = await api.get(`/blog/${id}`);
-      return response.data;
+      const response = await api.get(`/blog/singleblog${id}`);
+      return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
       const Error = (axiosError?.response?.data as { message: string }).message;
@@ -62,10 +62,10 @@ export const getSingleBlog = createAsyncThunk(
 
 export const editBlog = createAsyncThunk(
   "blog/edit",
-  async ({ id, updatedBlog }: { id: string; updatedBlog: Iblog }, thunkAPI) => {
+  async ({ id, formData }: { id: string; formData: FormData }, thunkAPI) => {
     try {
-      const response = await api.put(`/blog/${id}`, updatedBlog);
-      return response.data;
+      const response = await api.put(`/blog/editblog/${id}`, formData);
+      return response.data.data;
     } catch (error) {
       const axiosError = error as AxiosError;
       const Error = (axiosError?.response?.data as { message: string }).message;
@@ -78,11 +78,12 @@ export const editBlog = createAsyncThunk(
   }
 );
 
+
 export const deleteBlog = createAsyncThunk(
   "blog/delete",
   async (id: string, thunkAPI) => {
     try {
-      const response = await api.delete(`/blog/${id}`);
+      const response = await api.delete(`/blog/delete/${id}`);
       return response.data;
     } catch (error) {
       const axiosError = error as AxiosError;
